@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章标题 | Aurora Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+</head>
+<body> 
+    
+    <div id="reading-progress-bar"></div>
+    <button id="theme-toggle" aria-label="切换主题"><i class="fas fa-moon"></i></button> 
+
+    <header>
+        <div class="header-content">
+            <div class="logo"><a href="index.html">Aurora Blog</a></div>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="#comments">评论</a>
+                <a href="#">归档</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="article-container">
+        
+        <aside class="toc-aside">
+            <div id="toc-container">
+                <h4>文章目录 <i class="fas fa-list-alt"></i></h4>
+                <ul id="toc-list">
+                    </ul>
+            </div>
+        </aside>
+
+        <div class="article-content">
+            
+            <h1 class="post-title-detail">如何用纯 CSS 实现优雅的深色模式切换</h1>
+            
+            <div class="post-meta" style="text-align: center; margin-bottom: 30px;">
+                <span style="margin-right: 15px;"><i class="fas fa-calendar-alt"></i> 2025年12月15日</span>
+                <span style="margin-right: 15px;"><i class="fas fa-clock"></i> 5分钟阅读</span>
+                <span class="tag">#前端</span>
+                <span class="tag">#设计</span>
+            </div>
+
+            <img src="https://via.placeholder.com/1000x500/7943ff/ffffff?text=深色模式+UX+设计" alt="深色模式背景图" class="featured-image">
+
+            <div class="article-body">
+                
+                <p>最近几年，深色模式已经成为用户体验设计中的一个重要组成部分。它不仅能减少夜间使用时的眼睛疲劳，还能让您的网站看起来更加现代化和高级。最棒的是，我们不需要依赖复杂的后端或框架就能实现它！</p>
+                
+                <h2 id="section-1">1. 核心思路：CSS 变量与 DOM Class</h2>
+                <p>实现深色模式的关键在于利用 CSS 变量（CSS Variables）和 JavaScript 控制的类名（class）。我们将所有颜色存储在 `:root` 变量中，并在 `html.dark-mode` 类下定义它们的反转值。</p>
+
+                <h3 id="section-1-1">1.1. CSS 变量的定义</h3>
+                <p>在 `styles.css` 文件顶部，定义您的亮色主题和深色主题变量。例如：</p>
+                
+                <pre><code class="language-css">
+:root {
+    --bg-color: #ffffff; /* 亮色背景 */
+    --text-color: #1f1f1f; /* 亮色文本 */
+}
+
+html.dark-mode {
+    --bg-color: #121212; /* 深色背景 */
+    --text-color: #f0f0f0; /* 深色文本 */
+}
+
+/* 在 body 中使用变量 */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.5s ease;
+}
+                </code></pre>
+
+                <h2 id="section-2">2. JavaScript 切换逻辑</h2>
+                <p>通过 JavaScript，我们监听按钮点击事件，切换 `html` 元素上的 `dark-mode` 类，并使用 `localStorage` 记住用户的选择。</p>
+
+                <blockquote id="quote-tip">
+                    <p><i class="fas fa-lightbulb"></i> **小贴士：** 使用 `window.matchMedia('(prefers-color-scheme: dark)')` 可以自动适配用户的系统主题设置。</p>
+                </blockquote>
+                
+                <h3 id="section-2-1">2.1. 完整的 JS 逻辑代码</h3>
+                <p>以下是完整的 JavaScript 核心逻辑：</p>
+                
+                <pre><code class="language-javascript">
+const toggleButton = document.getElementById('theme-toggle');
+const root = document.documentElement; 
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    
+    // 检查本地存储或系统偏好
+    if (savedTheme === 'dark' || (savedTheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        root.classList.add('dark-mode');
+        toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+}
+
+toggleButton.addEventListener('click', () => {
+    root.classList.toggle('dark-mode');
+    if (root.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+        toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+        localStorage.setItem('theme', 'light');
+        toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', initializeTheme);
+                </code></pre>
+                
+            </div>
+            
+            <section id="comments" style="margin-top: 50px;">
+                <h2>💬 读者评论</h2>
+                
+                <giscus-widget
+                    id="giscus-comments"
+                    repo="您的GitHub用户名/您的仓库名" 
+                    repoid="您的REPO_ID"
+                    category="Comments" 
+                    categoryid="您的CATEGORY_ID"
+                    mapping="pathname"
+                    strict="0"
+                    reactionsenabled="1"
+                    emitmetadata="0"
+                    inputposition="bottom"
+                    theme="preferred_color_scheme"
+                    lang="zh-CN"
+                    loading="lazy"
+                    crossorigin="anonymous"
+                    async
+                ></giscus-widget>
+                
+                <p style="margin-top: 15px; font-size: 0.9em; color: var(--color-text-medium);">本博客使用 Giscus 评论系统，基于 GitHub Discussions，无需注册即可登录评论。</p>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer>
+        </footer>
+    
+    <a href="#top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+        document.addEventListener('scroll', () => {
+            const progressBar = document.getElementById('reading-progress-bar');
+            const article = document.querySelector('.article-content');
+            if (!article || !progressBar) return;
+
+            // 只计算文章内容区域的滚动进度
+            const contentHeight = article.scrollHeight - window.innerHeight;
+            const scrollPosition = window.scrollY - article.offsetTop;
+            
+            // 确保进度条只在文章范围内计算
+            let progress = 0;
+            if (scrollPosition > 0) {
+                progress = (scrollPosition / contentHeight) * 100;
+                progress = Math.min(100, Math.max(0, progress)); // 限制在 0-100%
+            }
+            
+            progressBar.style.width = progress + '%';
+        });
+    </script>
+
+    <script>
+        // (与 index.html 中的逻辑保持一致)
+        const toggleButton = document.getElementById('theme-toggle');
+        const root = document.documentElement; 
+        
+        // 初始化主题
+        const savedTheme = localStorage.getItem('theme');
+        let currentTheme = 'light';
+        
+        if (savedTheme === 'dark' || (savedTheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            currentTheme = 'dark';
+        }
+
+        if (currentTheme === 'dark') {
+            root.classList.add('dark-mode');
+            toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            root.classList.remove('dark-mode');
+            toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+
+        // 监听点击事件
+        if (toggleButton) {
+             toggleButton.addEventListener('click', () => {
+                root.classList.toggle('dark-mode');
+                
+                if (root.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+    </script>
+    
+    <script>
+        function generateTOC() {
+            const articleBody = document.querySelector('.article-body');
+            const tocList = document.getElementById('toc-list');
+            
+            if (!articleBody || !tocList) return;
+
+            // 查找 H2 和 H3 标签，并确保它们有 ID
+            const headings = articleBody.querySelectorAll('h2, h3');
+            let headingIndex = 0;
+
+            headings.forEach(heading => {
+                // 如果标题没有 ID，则自动分配一个
+                if (!heading.id) {
+                    heading.id = `toc-heading-${headingIndex++}`;
+                }
+                
+                const tag = heading.tagName.toLowerCase(); 
+                const link = document.createElement('a');
+                link.textContent = heading.textContent;
+                link.href = `#${heading.id}`; 
+
+                const listItem = document.createElement('li');
+                listItem.classList.add(`toc-${tag}`);
+                listItem.appendChild(link);
+                tocList.appendChild(listItem);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', generateTOC);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://giscus.app/client.js" defer></script>
+    
+</body>
+</html>
