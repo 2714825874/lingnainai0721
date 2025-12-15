@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora | 您的博客标题</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
+</head>
+<body> 
+    
+    <button id="theme-toggle" aria-label="切换主题"><i class="fas fa-moon"></i></button> 
+
+    <header>
+        <div class="header-content">
+            <div class="logo"><a href="index.html">Aurora Blog</a></div>
+            <nav>
+                <a href="#posts">文章</a>
+                <a href="#about">关于</a>
+                <a href="#">归档</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        
+        <section class="hero-section" id="about">
+            <h1>用代码记录世界，用设计点亮生活。</h1>
+            <p>我是 [您的昵称]，一位热衷于前端开发与极简主义的探索者。这里是我的数字花园，分享我的学习笔记、项目经验与生活思考。</p>
+        </section>
+
+        <h2 style="text-align: center; margin-bottom: 40px; font-size: 2em; color: var(--color-text-dark);">最新文章</h2>
+
+        <section class="posts-grid" id="posts">
+
+            <article class="post-card">
+                <a href="article-detail.html">
+                    <img src="https://via.placeholder.com/600x400/7943ff/ffffff?text=AURORA+POST+1" alt="文章图片1" class="post-image">
+                </a>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="tag">#前端</span>
+                        <span class="tag">#设计</span>
+                    </div>
+                    <a href="article-detail.html" style="text-decoration: none;">
+                         <h3>如何用纯 CSS 实现优雅的深色模式切换</h3>
+                    </a>
+                    <p class="post-meta">发布于：2025年12月15日</p>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <a href="article-detail.html">
+                    <img src="https://via.placeholder.com/600x400/ff43a4/ffffff?text=AURORA+POST+2" alt="文章图片2" class="post-image">
+                </a>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="tag">#生活</span>
+                        <span class="tag">#随笔</span>
+                    </div>
+                    <a href="article-detail.html" style="text-decoration: none;">
+                         <h3>那些让我感到幸福的小瞬间</h3>
+                    </a>
+                    <p class="post-meta">发布于：2025年12月10日</p>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <a href="article-detail.html">
+                    <img src="https://via.placeholder.com/600x400/43a4ff/ffffff?text=AURORA+POST+3" alt="文章图片3" class="post-image">
+                </a>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="tag">#工具</span>
+                        <span class="tag">#效率</span>
+                    </div>
+                    <a href="article-detail.html" style="text-decoration: none;">
+                         <h3>我的年度生产力工具箱分享</h3>
+                    </a>
+                    <p class="post-meta">发布于：2025年12月05日</p>
+                </div>
+            </article>
+            
+        </section>
+        
+        <div class="load-more-container">
+            <button id="loadMoreBtn">加载更多</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="#" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" target="_blank" title="Twitter/X"><i class="fab fa-twitter"></i></a>
+            <a href="mailto:youremail@example.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p>&copy; 2025 Aurora Blog. All Rights Reserved. Designed with minimal code.</p>
+    </footer>
+    
+    <a href="#top" id="backToTop"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+        // ------------------------------------
+        // 1. 深色模式切换逻辑
+        // ------------------------------------
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.documentElement; // 使用 document.documentElement 对应 :root.dark-mode
+
+        // 初始化主题
+        const savedTheme = localStorage.getItem('theme');
+        let currentTheme = 'light';
+        
+        if (savedTheme === 'dark' || (savedTheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            currentTheme = 'dark';
+        }
+
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+            toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            body.classList.remove('dark-mode');
+            toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+
+        // 监听点击事件
+        if (toggleButton) {
+             toggleButton.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+        
+        // ------------------------------------
+        // 2. 返回顶部按钮显示/隐藏
+        // ------------------------------------
+        const backToTop = document.getElementById('backToTop');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTop.style.display = "block";
+            } else {
+                backToTop.style.display = "none";
+            }
+        };
+
+        // 3. 简单的加载更多功能 (仅显示隐藏内容)
+        document.addEventListener('DOMContentLoaded', () => {
+            // 这里可以添加文章列表的动态加载逻辑
+            console.log("Aurora Blog Loaded.");
+        });
+
+    </script>
+</body>
+</html>
